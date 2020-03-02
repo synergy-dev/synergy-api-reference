@@ -1,0 +1,685 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>統合顧客管理システム Synergy! APIマニュアル(SOAP用)</title>
+  <link href="css/main.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="basic">
+  <a name="top" id="top"></a>
+
+
+  <!-- title -->
+  <h1>「統合顧客管理システム Synergy!」 Synergy!API 履歴<div class="right">Version 2.0</div>
+  </h1>
+
+  <!-- menu -->
+
+  <!-- main -->
+
+  <!-- 本文1 -->
+
+  <a name="first" id="first"></a>
+  <h2>はじめにお読みください</h2>
+  <p>
+    Synergy!APIはSOAPを使用し、Synergy!データベースから定義した「S!History」という顧客情報モデルに対して外部サービスからレコードの登録・参照・更新・削除・カウントをする事ができるAPIです。
+    <br>
+    <br>
+    Synergy!APIは、SOAPにより通信を行います。<br />
+    インタフェース仕様はWSDLによって定義されます。WSDL文書（history2.wsdl）を参照下さい。<br />
+  </p>
+
+  <h4>リクエストURL</h4>
+  <p>
+    ・登録<br />
+    　https://api.crmstyle.com/webapp/api/history2/create<br />
+    ・参照<br />
+    　https://api.crmstyle.com/webapp/api/history2/read<br />
+    ・更新<br />
+    　https://api.crmstyle.com/webapp/api/history2/update<br />
+    ・削除<br />
+    　https://api.crmstyle.com/webapp/api/history2/delete<br />
+    ・カウント<br />
+    　https://api.crmstyle.com/webapp/api/history2/count<br />
+  </p>
+
+  <h4>「S!History」について</h4>
+  <p>Synergy!内の履歴データベースに設定されているデータベース項目から顧客情報モデルとして固定項目の２項目＋追加項目２０項目を最大として割り当て可能<br>
+    そのAPI用の顧客情報モデルを「S!History」と呼びます。<br>
+    ※S!Historyの定義はクライアント機能（管理画面）より行います。<br>
+    <br>
+    ・固定項目<br>
+    　Synergy!ID、HistoryID<br>
+    ・追加項目<br>
+    　任意の項目を２０項目まで定義可能</p>
+  <h4>APIにアクセスする為の準備</h4>
+  <p>事前にAPIの設定をクライアント機能（管理画面）より行っておく必要があります。<br>
+    <br>
+    ・API機能のON/OFF<br>
+    ・認証に必要なAPI-KEYの発行／再発行<br>
+    ・接続許可IPアドレス設定<br>
+    ・「S!Person」定義<br>
+    ・「S!History」定義</p>
+  <h4>補足事項</h4>
+  <p>
+    SSL通信(TLS1.2以上)とSOAP通信が必要となります。<br />
+    APIの通信時の文字コードはUTF-8です。<br />
+    エレメント名の内容を空白とした場合は、空白で検索・更新等が行われます。<br />
+    NULL値で検索を行うと全件が検索対象となります。<br />
+    API-KEYは再発行可能ですが、自動発行で指定はできません。<br>
+    Synergy!APIへのリクエストは１秒間あたり５０回までに制限しています、制限を超えた場合１分間アクセス制限がかかります。<br />
+    1秒間の最大処理能力は50を上限とするベストエフォートになります。<br />
+    PHP5.2.6及びSOAP拡張モジュールを利用した動作検証をおこなっております。<br />
+    Synergy!APIではタイムスタンプ型項目の利用はできません。<br />
+    <br>
+  </p>
+  <h2>リクエスト</h2>
+  <h3>CREATE</h3>
+  <h4>履歴データ(SynergyHistory)の新規作成を行うサービス</h4>
+
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">historykey</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>HistoryKEY</td>
+    </tr>
+    <tr>
+      <td class="w100">synergyid</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!ID</td>
+    </tr>
+    <tr>
+      <td class="w100">synergyHistory</td>
+      <td class="w100">synergyHistory</td>
+      <td class="w10">○</td>
+      <td>
+        新規作成するデータを指定<br />
+        HistoryIDを追加データとして指定する事はできません。</td>
+    </tr>
+  </table>
+
+  <h3>READ</h3>
+  <h4>指定の項目(column)に対して完全一致で顧客データ検索を行うサービス<br>(複数選択型の場合、条件に指定されたすべての選択肢を選択しているデータにマッチします。）</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">historykey</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>HistoryKEY</td>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>検索対象となるS!Historyパラメータ名を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">condition</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">limit</td>
+      <td class="w100">int</td>
+      <td class="w10"></td>
+      <td class="w10">1-100まで指定可能です。<br />指定されていない場合は,100がセットされます。</td>
+    </tr>
+    <tr>
+      <td class="w100">offset</td>
+      <td class="w100">int</td>
+      <td class="w10"></td>
+      <td>指定されていない場合は,0がセットされます。</td>
+    </tr>
+    <tr>
+      <td class="w100">isDesc</td>
+      <td class="w100">boolean</td>
+      <td class="w10"></td>
+      <td>sort並び替え属性指定(降順、昇順)<br />指定しない場合はHistoryIDで昇順</td>
+    </tr>
+    <tr>
+      <td class="w100">sortcolumn</td>
+      <td class="w100">string</td>
+      <td class="w10"></td>
+      <td>並び替え項目指定<br />Synergy!ID,HistoryID,数値型,日付型のみ指定が可能です。</td>
+    </tr>
+
+  </table>
+
+  <h3>UPDATE</h3>
+  <h4>指定の項目(column)に対して完全一致でマッチする、複数の顧客データに対して更新を行うサービス<br>(複数選択型の場合、条件に指定されたすべての選択肢を選択しているデータにマッチします。）</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">historykey</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>HistoryKEY</td>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>検索対象となるS!Historyパラメータ名を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">condition</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br>
+        最大３００件まで複数同時更新できます。<br>
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">synergyHistory</td>
+      <td class="w100">synergyHistory</td>
+      <td class="w10">○</td>
+      <td>更新内容となるデータを指定<br>
+        Synergy!ID,HistoryIDを追加データとして指定する事はできません。
+      </td>
+    </tr>
+  </table>
+
+  <h3>DELETE</h3>
+  <h4>指定の項目(column)に対して完全一致でマッチする、複数の顧客データに対して削除を行うサービス<br>(複数選択型の場合、条件に指定されたすべての選択肢を選択しているデータにマッチします。）</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">historykey</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>HistoryKEY</td>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>検索対象となるS!Historyパラメータ名</td>
+    </tr>
+    <tr>
+      <td class="w100">condition</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br>
+        最大３００件まで複数同時削除できます。<br>
+      </td>
+    </tr>
+  </table>
+
+  <h3>COUNT</h3>
+  <h4>履歴データ(SynergyHistory)のカウントを行うサービス</h4>
+
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">historykey</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>HistoryKEY</td>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>検索対象となるS!Historyパラメータ名を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">condition</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定</td>
+    </tr>
+  </table>
+
+
+  <!-- 本文3 -->
+
+  <h2>レスポンス</h2>
+
+  <h3>CREATE</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">historyId</td>
+      <td class="w100">int</td>
+      <td>CREATEされたデータのHistory!ID</td>
+    </tr>
+  </table>
+
+  <h3>READ</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">count</td>
+      <td class="w100">int</td>
+      <td>READ件数<br>最大件数１００件</td>
+    </tr>
+    <tr>
+      <td class="w100">synergyHistory</td>
+      <td class="w100">synergyHistory</td>
+      <td>検索条件に合った顧客データ<br>
+        検索結果は、Synergy!IDでソートされます。<br>
+      </td>
+    </tr>
+  </table>
+
+  <h3>UPDATE</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">count</td>
+      <td class="w100">int</td>
+      <td>更新件数<br>最大件数３００件</td>
+    </tr>
+  </table>
+
+  <h3>DELETE</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">count</td>
+      <td class="w100">int</td>
+      <td>削除件数<br>最大件数３００件</td>
+    </tr>
+  </table>
+
+  <h3>COUNT</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">count</td>
+      <td class="w100">int</td>
+      <td>件数</td>
+    </tr>
+  </table>
+
+  <h2>オリジナルタイプ(complexType)</h2>
+
+  <h3>synergyHistory</h3>
+  <h4>S!Historyをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w150">項目名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">historyid</td>
+      <td class="w150">History!ID</td>
+      <td class="w100">int</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">synergyid</td>
+      <td class="w150">Synergy!ID</td>
+      <td class="w100">int</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">elements</td>
+      <td class="w150">追加項目</td>
+      <td class="w100">elements</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <h3>elements</h3>
+  <h4>追加項目をあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">elementData</td>
+      <td class="w100">elementData</td>
+      <td class="w10">○</td>
+      <td>出現上限２０回</td>
+    </tr>
+  </table>
+
+  <h3>elementData</h3>
+  <h4>S!Historyパラメータ名と型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>S!Historyパラメータ名を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">data</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td></td>
+    </tr>
+  </table>
+
+
+
+  <h3>synergyComplexData</h3>
+  <h4>Synergy!の全ての型のデータを表すためのオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">textData</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td>「textData」「selectData」のどちらかを必ず指定<br>
+        Synergy!の単一選択型・複数選択型以外の型のデータを表す。<br>
+        各型にあったデータ形式でない場合はエラーとなります。<br>
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">selectData</td>
+      <td class="w100">selectList</td>
+      <td class="w10">※</td>
+      <td>
+        「textData」「selectData」のどちらかを必ず指定<br>
+        Synergy!の単一選択型・複数選択型の型のデータを表す。<br>
+        単一選択型のデータを入力する場合は、selectList型の保持するselectデータは単一でなくてはならない。<br>
+      </td>
+    </tr>
+  </table>
+
+
+  <h3>selectList</h3>
+  <h4>Synergy!の複数選択型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">select</td>
+      <td class="w100">select</td>
+      <td class="w10"></td>
+      <td>出現回数の上限なし</td>
+    </tr>
+  </table>
+
+  <h3>singleSelect</h3>
+  <h4>Synergy!の単一選択型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">select</td>
+      <td class="w100">select</td>
+      <td class="w10"></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <h3>select</h3>
+  <h4>Synergy!の選択型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">value</td>
+      <td class="w100">int</td>
+      <td class="w10">○</td>
+      <td>選択型の選択値</td>
+    </tr>
+    <tr>
+      <td class="w100">text</td>
+      <td class="w100">string</td>
+      <td class="w10"></td>
+      <td>選択型の補助テキスト</td>
+    </tr>
+  </table>
+
+
+  <h2>エラーコード</h2>
+  <h3>エラーコード</h3>
+  <h4>SynergyAPIから返されるエラー定義</h4>
+  <table>
+    <tr>
+      <th class="w100">エラーコード</th>
+      <th class="w300">メッセージ</th>
+      <th class="w300">備考</th>
+    </tr>
+    <tr>
+      <td class="w100">100</td>
+      <td class="w300">API-KEYが不正です</td>
+      <td class="w300"></td>
+    </tr>
+    <tr>
+      <td class="w100">101</td>
+      <td class="w300">指定された項目が存在しません</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">102</td>
+      <td class="w300">データ形式が不正です</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">103</td>
+      <td class="w300">指定された条件で対象を1レコードに絞り込めませんでした</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">104</td>
+      <td class="w300">更新キー制約に違反します</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">105</td>
+      <td class="w300">指定された項目は設定されていません</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">106</td>
+      <td class="w300">データを設定することができない項目があります</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">107</td>
+      <td class="w300">ACCESS DENIED</td>
+      <td class="w300">IPアドレス制限によるエラーが発生した際のエラーコード</td>
+    </tr>
+
+
+    <tr>
+      <td class="w100">108</td>
+      <td class="w300">ACCESS DENIED</td>
+      <td class="w300">アクセス制限数によるエラーが発生した際のエラーコード</td>
+    </tr>
+
+    <tr>
+      <td class="w100">109</td>
+      <td class="w300">XML PARSE ERROR</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">110</td>
+      <td class="w300">S!Person項目を指定してください</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">150</td>
+      <td class="w300">S!History項目を指定してください</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">151</td>
+      <td class="w300">指定された条件で対象を300レコード以下に絞り込めませんでした</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">152</td>
+      <td class="w300">HistoryKeyが不正です</td>
+      <td class="w300"></td>
+    </tr>
+
+
+    <tr>
+      <td class="w100">200</td>
+      <td class="w300">Synergy!APIの設定がされていません</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">201</td>
+      <td class="w300">Synergy!APIが停止中です</td>
+      <td class="w300"></td>
+    </tr>
+
+    <tr>
+      <td class="w100">600</td>
+      <td class="w300">システムエラー</td>
+      <td class="w300">想定外のエラーが発生した際のエラーコード</td>
+    </tr>
+  </table>
+  <h2>改訂履歴</h2>
+  <table>
+    <tr>
+      <th class="w100">改訂日</th>
+      <th class="w300">更新内容</th>
+    </tr>
+    <tr>
+      <td class="w100">2020/02/18</td>
+      <td class="w300">補足事項にタイムスタンプ型に関する説明を追記</td>
+    </tr>
+    <tr>
+      <td class="w100">2018/11/12</td>
+      <td class="w300">SSL通信に関する文言を修正（TLS1.0→TLS1.2）</td>
+    </tr>
+    <tr>
+      <td class="w100">2018/08/10</td>
+      <td class="w300">エレメント名「selectData」の「備考」欄の表記間違いを修正（selet→select）</td>
+    </tr>
+    <tr>
+      <td class="w100">2018/08/10</td>
+      <td class="w300">補足事項にSSL通信に関する文言を追記</td>
+    </tr>
+    <tr>
+      <td class="w100">2016/10/25</td>
+      <td class="w300">初版</td>
+    </tr>
+  </table>
+</body>
+
+</html>

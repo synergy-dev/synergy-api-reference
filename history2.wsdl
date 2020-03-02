@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://api.crmstyle.com/history2/" xmlns:impl="http://api.crmstyle.com/history2/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://api.crmstyle.com/history2/xsd" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <schema elementFormDefault="qualified" targetNamespace="http://api.crmstyle.com/history2/xsd" xmlns="http://www.w3.org/2001/XMLSchema">
+
+         <complexType name="select">
+            <attribute name="value" type="xsd:int" use="required"/>
+            <attribute name="text" type="xsd:string" use="optional"/>
+         </complexType>
+
+         <complexType name="selectList">
+            <sequence>
+               <element maxOccurs="unbounded" minOccurs="0" name="select" type="xsd1:select"/>
+            </sequence>
+         </complexType>
+
+         <complexType name="singleSelect">
+            <sequence>
+               <element maxOccurs="1" minOccurs="0" name="select" type="xsd1:select"/>
+            </sequence>
+         </complexType>
+
+         <complexType name="synergyComplexData">
+            <choice>
+               <element name="textData" nillable="true" type="xsd:string"/>
+               <element name="selectData" type="xsd1:selectList"/>
+            </choice>
+         </complexType>
+
+         <complexType name="elementData">
+            <all>
+               <element name="column" type="xsd:string"/>
+               <element name="data" type="xsd1:synergyComplexData"/>
+            </all>
+         </complexType>
+
+         <complexType name="elements">
+            <sequence>
+               <element maxOccurs="20" name="elementData" type="xsd1:elementData"/>
+            </sequence>
+         </complexType>
+
+         <complexType name="synergyHistory">
+            <choice maxOccurs="unbounded" minOccurs="0">
+               <element maxOccurs="1" minOccurs="0" name="historyid" type="xsd:int"/>
+               <element maxOccurs="1" minOccurs="0" name="synergyid" type="xsd:int"/>
+               <element maxOccurs="1" minOccurs="0" name="elements" type="xsd1:elements"/>
+            </choice>
+         </complexType>
+
+         <element name="createRequest">
+            <complexType>
+               <all>
+                  <element name="key" type="xsd:string"/>
+                  <element name="historykey" type="xsd:string"/>
+                  <element name="synergyid" type="xsd:string"/>
+                  <element name="synergyHistory" type="xsd1:synergyHistory"/>
+               </all>
+            </complexType>
+         </element>
+         <element name="createResponse">
+            <complexType>
+               <sequence>
+                  <element name="historyid" type="xsd:int"/>
+               </sequence>
+            </complexType>
+         </element>
+
+         <element name="readRequest">
+            <complexType>
+               <all>
+                  <element name="key" type="xsd:string"/>
+                  <element name="historykey" type="xsd:string"/>
+                  <element name="column" type="xsd:string"/>
+                  <element name="condition" type="xsd1:synergyComplexData"/>
+                  <element minOccurs="0" name="limit" type="xsd:int"/>
+                  <element minOccurs="0" name="offset" type="xsd:int"/>
+                  <element minOccurs="0" name="isDesc" type="xsd:boolean"/>
+                  <element minOccurs="0" name="sortcolumn" type="xsd:string"/>
+               </all>
+            </complexType>
+         </element>
+         <element name="readResponse">
+            <complexType>
+               <sequence>
+                  <element name="count" type="xsd:int"/>
+                  <element maxOccurs="100" minOccurs="0" name="synergyHistory" type="xsd1:synergyHistory"/>
+               </sequence>
+            </complexType>
+         </element>
+
+         <element name="updateRequest">
+            <complexType>
+               <all>
+                  <element name="key" type="xsd:string"/>
+                  <element name="historykey" type="xsd:string"/>
+                  <element name="column" type="xsd:string"/>
+                  <element name="condition" type="xsd1:synergyComplexData"/>
+                  <element name="synergyHistory" type="xsd1:synergyHistory"/>
+               </all>
+            </complexType>
+         </element>
+         <element name="updateResponse">
+            <complexType>
+               <sequence>
+                  <element name="count" type="xsd:int"/>
+               </sequence>
+            </complexType>
+         </element>
+
+         <element name="deleteRequest">
+            <complexType>
+               <all>
+                  <element name="key" type="xsd:string"/>
+                  <element name="historykey" type="xsd:string"/>
+                  <element name="column" type="xsd:string"/>
+                  <element name="condition" type="xsd1:synergyComplexData"/>
+               </all>
+            </complexType>
+         </element>
+         <element name="deleteResponse">
+            <complexType>
+               <sequence>
+                  <element name="count" type="xsd:int"/>
+               </sequence>
+            </complexType>
+         </element>
+
+         <element name="fault">
+            <complexType>
+               <sequence>
+                  <element name="errorCode" type="xsd:int"/>
+                  <element name="errorMessage" type="xsd:string"/>
+               </sequence>
+            </complexType>
+         </element>
+        
+         <element name="countRequest">
+            <complexType>
+               <all>
+                  <element name="key" type="xsd:string"/>
+                  <element name="historykey" type="xsd:string"/>
+                  <element name="column" type="xsd:string"/>
+                  <element name="condition" type="xsd1:synergyComplexData"/>
+               </all>
+           </complexType>
+        </element>
+        <element name="countResponse">
+           <complexType>
+              <sequence>
+                 <element name="count" type="xsd:string"/>
+              </sequence>
+           </complexType>
+        </element>
+
+      </schema>
+  </wsdl:types>
+  <wsdl:message name="faultMessage">
+    <wsdl:part name="faultMessage" element="xsd1:fault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="update">
+    <wsdl:part name="requestParameter" element="xsd1:updateRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteResponse">
+    <wsdl:part name="deleteReturn" element="xsd1:deleteResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="delete">
+    <wsdl:part name="requestParameter" element="xsd1:deleteRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createResponse">
+    <wsdl:part name="createReturn" element="xsd1:createResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="read">
+    <wsdl:part name="requestParameter" element="xsd1:readRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateResponse">
+    <wsdl:part name="updateReturn" element="xsd1:updateResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="readResponse">
+    <wsdl:part name="readReturn" element="xsd1:readResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="create">
+    <wsdl:part name="requestParameter" element="xsd1:createRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="count">
+    <wsdl:part name="requestParameter" element="xsd1:countRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="countResponse">
+    <wsdl:part name="countReturn" element="xsd1:countResponse">
+    </wsdl:part>
+  </wsdl:message>
+
+  <wsdl:portType name="HistoryPortType">
+    <wsdl:operation name="create" parameterOrder="requestParameter">
+      <wsdl:input message="impl:create">
+    </wsdl:input>
+      <wsdl:output message="impl:createResponse">
+    </wsdl:output>
+      <wsdl:fault name="faultMessage" message="impl:faultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="read" parameterOrder="requestParameter">
+      <wsdl:input message="impl:read">
+    </wsdl:input>
+      <wsdl:output message="impl:readResponse">
+    </wsdl:output>
+      <wsdl:fault name="faultMessage" message="impl:faultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="update" parameterOrder="requestParameter">
+      <wsdl:input message="impl:update">
+    </wsdl:input>
+      <wsdl:output message="impl:updateResponse">
+    </wsdl:output>
+      <wsdl:fault name="faultMessage" message="impl:faultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="delete" parameterOrder="requestParameter">
+      <wsdl:input message="impl:delete">
+    </wsdl:input>
+      <wsdl:output message="impl:deleteResponse">
+    </wsdl:output>
+      <wsdl:fault name="faultMessage" message="impl:faultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="count" parameterOrder="requestParameter">
+      <wsdl:input message="impl:count">
+    </wsdl:input>
+      <wsdl:output message="impl:countResponse">
+    </wsdl:output>
+      <wsdl:fault name="faultMessage" message="impl:faultMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HistoryBinding" type="impl:HistoryPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="create">
+      <wsdlsoap:operation soapAction="create"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="faultMessage">
+    <wsdlsoap:fault name="faultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="read">
+      <wsdlsoap:operation soapAction="read"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="faultMessage">
+    <wsdlsoap:fault name="faultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <wsdlsoap:operation soapAction="update"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="faultMessage">
+    <wsdlsoap:fault name="faultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <wsdlsoap:operation soapAction="delete"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="faultMessage">
+    <wsdlsoap:fault name="faultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="count">
+      <wsdlsoap:operation soapAction="count"/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="faultMessage">
+    <wsdlsoap:fault name="faultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation> 
+  </wsdl:binding>
+  <wsdl:service name="history2">
+    <wsdl:port name="HistoryPort" binding="impl:HistoryBinding">
+      <wsdlsoap:address location="https://api.crmstyle.com/webapp/api/history2/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
+
+
+

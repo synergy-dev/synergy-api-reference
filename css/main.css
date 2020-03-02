@@ -1,0 +1,313 @@
+@charset "Shift_JIS";
+
+/* 
+================================================================================
+Last Up Date	2007.09.10
+(C) Synergy Marketing All Rights Reserved.
+================================================================================
+*/
+
+
+/* ã§í ê›íË INDEX
+================================================================================
+
+================================================================================
+*/
+
+
+/* å≈íË
+================================================================================
+
+================================================================================*/
+
+*{
+	font-size:100%;
+}
+
+html{
+	overflow-y:scroll;
+} 
+
+body {
+	font-size:80%;
+	color:#333333;
+	line-height:150%;
+	margin:20px;
+}
+img {
+	border:0;
+	margin:0;
+}
+script{
+	display:none;
+}
+a{
+	color:#0c4198;
+}
+a:hover{
+	text-decoration:none;
+	color:#C80012;
+}
+
+#close{
+	position:absolute;
+	right:20px;
+	top:15px;
+	padding-left:300px;
+}
+
+h1{
+	font-size:130%;
+	color:#ffffff;
+	padding:18px;
+	background:url("../image/h1_back.gif") repeat-x center right;
+}
+h2{
+	font-size:120%;
+	padding:11px 20px 0 20px;
+	height:30px;
+	color:#555555;
+	background:url("../image/h2_basic.gif") repeat-x center;
+}
+#basic h2{
+	background:url("../image/h2_basic.gif") repeat-x center;
+}
+#poem h2{
+	background:url("../image/h2_poem.gif") repeat-x center;
+}
+#wish h2{
+	background:url("../image/h2_wish.gif") repeat-x center;
+}
+#hear h2{
+	background:url("../image/h2_hear.gif") repeat-x center;
+}
+#move h2{
+	background:url("../image/h2_move.gif") repeat-x center;
+}
+h3{
+	margin-left:20px;
+	margin-right:20px;
+	font-size:110%;
+	padding:5px 8px 4px 8px;
+	border:2px solid #cccccc;
+}
+h4{
+	margin-left:20px;
+	margin-right:20px;
+	padding-left:8px;
+	border-left:3px solid #c60715;
+}
+p{
+	margin-left:20px;
+	margin-right:20px;
+}
+table{
+	margin-left:20px;
+	margin-right:20px;
+	border-collapse:collapse;
+	border:1px solid #999999;
+	margin-bottom:25px;
+}
+th{
+	padding:4px;
+	border:1px solid #999999;
+	background-color:#e2eeec;
+}
+td{
+	padding:4px;
+	border:1px solid #999999;
+}
+ul{
+}
+.image{
+	font-size:80%;
+	color:#666666;
+}
+.image img{
+	border:1px solid #cccccc;
+	padding:10px;
+}
+.menu{
+	padding:1px 0;
+	background:#e0e8e9;
+	margin-bottom:20px;
+}
+.menu ol{
+	list-style-image:url("../image/menu_icon_basic2.gif");
+}
+#basic .menu ol{
+	list-style-image:url("../image/menu_icon_basic2.gif");
+}
+#poem .menu ol{
+	list-style-image:url("../image/menu_icon_poem2.gif");
+}
+#wish .menu ol{
+	list-style-image:url("../image/menu_icon_wish2.gif");
+}
+#hear .menu ol{
+	list-style-image:url("../image/menu_icon_hear2.gif");
+}
+#move .menu ol{
+	list-style-image:url("../image/menu_icon_move2.gif");
+}
+
+.point{
+	margin-left:20px;
+	margin-right:20px;
+	margin-bottom:25px;
+	padding:1px 15px 1px 50px;
+	background:#e2eeec url("../image/point_back.gif") no-repeat left top;
+}
+
+.note{
+	margin-left:20px;
+	margin-right:20px;
+	margin-bottom:25px;
+	padding:1px 15px 1px 50px;
+	background:#f7f5dd url("../image/note_back.gif") no-repeat left top;
+}
+
+.warn{
+	margin-left:20px;
+	margin-right:20px;
+	margin-bottom:25px;
+	padding:1px 15px 1px 50px;
+	background:#f5e6df url("../image/warn_back.gif") no-repeat left top;
+}
+.point h3,
+.note h3,
+.warn h3{
+	border:0;
+	padding:0;
+	margin-left:0;
+	margin-right:0;
+	font-size:100%;
+}
+.point p,
+.note p,
+.warn p{
+	margin-left:0;
+	margin-right:0;
+}
+
+.pagetop{
+	height:15px;
+	line-height:100%;
+}
+.pagetop a{
+	position:absolute;
+	right:40px;
+	display:block;
+	text-indent:-9999px;
+	width:100px;
+	height:15px;
+	background:url("../image/pagetop.gif") no-repeat 0 0;
+}
+.pagetop a:hover{
+	background-position:0 -15px;
+}
+
+.center{
+	text-align:center;
+}
+.left{
+	text-align:left;
+}
+.right{
+	text-align:right;
+}
+
+
+.w100{
+	width:100px;
+}
+.w150{
+	width:150px;
+}
+.w200{
+	width:200px;
+}
+.w250{
+	width:250px;
+}
+.w300{
+	width:300px;
+}
+.w350{
+	width:350px;
+}
+.w400{
+	width:400px;
+}
+.w450{
+	width:450px;
+}
+.w500{
+	width:500px;
+}
+
+/* Background Color */
+.bg-pink,
+.bg-pink td,
+.bg-pink th{ 
+	background-color:#FFF0F0!important;
+}
+.bg-blue,
+.bg-blue td,
+.bg-blue th{ 
+	background-color:#DFEFF3!important;
+}
+.bg-yellow,
+.bg-yellow td,
+.bg-yellow th{ 
+	background-color:#F9F9D8!important;
+}
+
+
+
+#pankuzu{
+	color:#666666;
+	margin:0 0 10px 0;
+	line-height:100%;
+	padding:0;
+}
+
+#copyright{
+	text-indent:-9999px;
+	text-align:center;
+	margin:50px auto;
+	background:url("../image/copyright.gif") no-repeat center;
+}
+
+
+
+/* PDFâªópÉXÉ^ÉCÉã
+================================================================================
+
+================================================================================*/
+@media print {
+body{
+	font-family:Arial,'ÇlÇr ÇoÉSÉVÉbÉN',sans-serif;
+}
+#pankuzu{
+	display:none;
+}
+#copyright{
+	display:none;
+}
+#close{
+	display:none;
+}
+.pagetop{
+	display:none;
+}
+.pagebreak{
+	page-break-after: always;
+}
+h1{
+	page-break-before: always;
+}
+.image{
+	page-break-before: avoid;
+}
+}

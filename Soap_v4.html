@@ -1,0 +1,1439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>統合顧客管理システム Synergy! APIマニュアル(SOAP用)</title>
+  <link href="css/main.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="basic">
+  <a name="top" id="top"></a>
+
+
+  <!-- title -->
+  <h1>「統合顧客管理システム Synergy!」 Synergy!API<div class="right">Version 4.0</div>
+  </h1>
+
+  <!-- menu -->
+
+  <!-- main -->
+
+  <!-- 本文1 -->
+
+  <a name="first" id="first"></a>
+  <h2>はじめにお読みください</h2>
+  <p>
+    Synergy!APIはSOAPを使用し、マスタデータベースから定義した「S!Person」という顧客情報モデルに対して外部サービスからレコードの登録・参照・更新・削除・更新登録・カウントをする事ができるAPIです。
+    <br />
+    <br />
+    Synergy!APIは、SOAPにより通信を行います。<br />
+    インタフェース仕様はWSDLによって定義されます。WSDL文書（customer4.wsdl）を参照下さい。<br />
+  </p>
+  <h4>リクエストURL</h4>
+  <p>
+    ・登録<br />
+    　https://api.crmstyle.com/webapp/api/customer4/create<br />
+    ・参照<br />
+    　https://api.crmstyle.com/webapp/api/customer4/read<br />
+    ・更新<br />
+    　https://api.crmstyle.com/webapp/api/customer4/update<br />
+    ・削除<br />
+    　https://api.crmstyle.com/webapp/api/customer4/delete<br />
+    ・更新登録<br />
+    　https://api.crmstyle.com/webapp/api/customer4/upsert<br />
+    ・カウント<br />
+    　https://api.crmstyle.com/webapp/api/customer4/count<br />
+  </p>
+
+  <h4>「S!Person」について</h4>
+  <p>Synergy!内のマスターデータベースに設定されているデータベース項目から顧客情報モデルとして固定・基本項目の１９項目＋追加項目１００項目を最大として割り当て可能<br />
+    そのAPI用の顧客情報モデルを「S!Person」と呼びます。<br />
+    ※S!Personの定義はクライアント機能（管理画面）より行います。<br />
+    <br />
+    ・固定項目<br />
+
+    　Synergy!ID、ＰＣメールアドレス、携帯メールアドレス、更新日時、システム登録日時、メール受信拒否フラグ、ＰＣメールエラーカウント、携帯メールエラーカウント、メルマガ解除フラグリスト<br />
+    ・基本項目<br />
+    　氏名、シメイ、都道府県、住所、郵便番号、電話番号、FAX、携帯電話番号、生年月日、パスワード<br />
+    ・追加項目<br />
+    　任意の項目を１００項目まで定義可能</p>
+  <h4>APIにアクセスする為の準備</h4>
+  <p>事前にAPIの設定をクライアント機能（管理画面）より行っておく必要があります。<br />
+    <br />
+    ・API機能のON/OFF<br />
+    ・認証に必要なAPI-KEYの発行／再発行<br />
+    ・接続許可IPアドレス設定<br />
+    ・「S!Person」定義</p>
+  <h4>補足事項</h4>
+  <p>
+    SSL通信(TLS1.2以上)とSOAP通信が必要となります。<br />
+    APIの通信時の文字コードはUTF-8です。<br />
+    API-KEYは再発行可能ですが、自動発行で指定はできません。<br />
+    Synergy!APIへのリクエストは１秒間あたり５０回までに制限しています、制限を超えた場合１分間アクセス制限がかかります。<br />
+    IPアドレス毎に1秒間の最大処理能力は50を上限とするベストエフォートになります。<br />
+    PHP5.3.8及びSOAP拡張モジュールを利用した動作検証をおこなっております。<br />
+    Synergy!APIではタイムスタンプ型項目の利用はできません。<br />
+    <br />
+  </p>
+  <h2>リクエスト</h2>
+  <h3>CREATE</h3>
+  <h4>顧客データ(SynergyPerson)の新規作成を行うサービス</h4>
+
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">synergyPerson</td>
+      <td class="w100">synergyPerson</td>
+      <td class="w10">○</td>
+      <td>
+        新規作成するデータを指定<br />
+        Synergy!ID,更新日時,システム登録日時を追加データとして指定する事はできません。</td>
+    </tr>
+  </table>
+
+  <h3>READ</h3>
+  <h4>指定の検索条件(searchConditions)にて顧客データ検索を行うサービス</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">searchConditions</td>
+      <td class="w100">searchConditions</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br />
+        最大100件まで指定可能<br />
+        「op」属性により「searchCondition」間の演算子を変更できます。<br />
+        （「op」属性詳細は「※1 「searchConditions」の「op」属性一覧」参照）
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">limit</td>
+      <td class="w100">int</td>
+      <td class="w10"></td>
+      <td class="w10">1-100まで指定可能<br />指定しない場合は100がセットされます。</td>
+    </tr>
+    <tr>
+      <td class="w100">offset</td>
+      <td class="w100">int</td>
+      <td class="w10"></td>
+      <td>指定しない場合は0がセットされます。<br />
+        リクエスト時点の検索結果に対するオフセット値となります。<br />
+        （前回リクエスト結果に対してのオフセットではありません。）
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">sortcolumn</td>
+      <td class="w100">string</td>
+      <td class="w10"></td>
+      <td>並び替え項目指定<br />
+        指定可能項目以外を指定した場合エラーとなります。<br />
+        （指定可能項目についての詳細は「※2 「sortcolumn」指定可能項目一覧」参照）
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">isDesc</td>
+      <td class="w100">boolean</td>
+      <td class="w10"></td>
+      <td>「sortcolumn」の並び替え属性指定(降順、昇順)<br />指定しない場合はSynergy!IDで昇順となります。<br />
+        「true」もしくは「false」を指定してください。
+      </td>
+    </tr>
+  </table>
+
+  <h3>UPDATE</h3>
+  <h4>指定の1件の検索条件(searchConditions)にて絞り込んだ1件の顧客データに対して更新を行うサービス</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">searchConditions</td>
+      <td class="w100">searchConditions</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br />
+        1件のみ指定可能<br />
+        「op」属性指定や、検索結果が複数件の場合エラーとなります。<br />
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">synergyPerson</td>
+      <td class="w100">synergyPerson</td>
+      <td class="w10">○</td>
+      <td>更新内容となるデータを指定<br />
+        Synergy!ID,更新日時,システム登録日時を更新データとして指定する事はできません。
+        <br />
+      </td>
+    </tr>
+  </table>
+
+  <h3>DELETE</h3>
+  <h4>指定の1件の検索条件(searchConditions)にて絞り込んだ1件の顧客データに対して削除を行うサービス</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">searchConditions</td>
+      <td class="w100">searchConditions</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br />
+        1件のみ指定可能<br />
+        「op」属性指定や、検索結果が複数件の場合エラーとなります。<br />
+      </td>
+    </tr>
+  </table>
+
+  <h3>UPSERT</h3>
+  <h4>指定の1件の検索条件(searchConditions)にて絞り込んだ顧客データが1件存在した場合、当該データに対して更新<br />
+    存在しなかった場合は新規作成を行うサービス</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">searchConditions</td>
+      <td class="w100">searchConditions</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br />
+        1件のみ指定可能<br />
+        「op」属性指定や、検索結果が複数件の場合エラーとなります。<br />
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">synergyPerson</td>
+      <td class="w100">synergyPerson</td>
+      <td class="w10">○</td>
+      <td>新規作成するデータ、または更新内容となるデータを指定<br />
+        Synergy!ID,更新日時,システム登録日時を新規作成、または更新データとして指定する事はできません。
+        <br />
+      </td>
+    </tr>
+  </table>
+
+  <h3>COUNT</h3>
+  <h4>指定の検索条件(searchConditions)にて顧客データのカウントを行うサービス</h4>
+
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">key</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>Synergy!API-KEY</td>
+    </tr>
+    <tr>
+      <td class="w100">searchConditions</td>
+      <td class="w100">searchConditions</td>
+      <td class="w10">○</td>
+      <td>検索条件を指定<br />
+        最大100件まで指定可能<br />
+        「op」属性により「searchCondition」間の演算子を変更できます。<br />
+        （「op」属性詳細は「※1 「searchConditions」の「op」属性一覧」参照）
+      </td>
+    </tr>
+  </table>
+
+  <!-- 本文3 -->
+
+  <h2>レスポンス</h2>
+
+  <h3>CREATE</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">synergyId</td>
+      <td class="w100">int</td>
+      <td>CREATEされたデータのSynergy!ID</td>
+    </tr>
+  </table>
+
+  <h3>READ</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">count</td>
+      <td class="w100">int</td>
+      <td>READ件数<br />最大件数100件</td>
+    </tr>
+    <tr>
+      <td class="w100">synergyPerson</td>
+      <td class="w100">synergyPerson</td>
+      <td>検索条件に合致したデータ<br />
+        100件を超えるデータが存在する場合は先頭から100件を表示します。<br />
+      </td>
+    </tr>
+  </table>
+
+  <h3>UPDATE</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">synergyId</td>
+      <td class="w100">int</td>
+      <td>UPDATEされたデータのSynergy!ID</td>
+    </tr>
+  </table>
+
+  <h3>DELETE</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">synergyId</td>
+      <td class="w100">int</td>
+      <td>DELETEされたデータのSynergy!ID</td>
+    </tr>
+  </table>
+
+  <h3>UPSERT</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">synergyId</td>
+      <td class="w100">int</td>
+      <td>UPSERTされたデータのSynergy!ID</td>
+    </tr>
+  </table>
+
+  <h3>COUNT</h3>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">count</td>
+      <td class="w100">int</td>
+      <td>COUNTされたデータの件数</td>
+    </tr>
+  </table>
+
+  <h2>オリジナルタイプ(complexType)</h2>
+
+  <h3>synergyPerson</h3>
+  <h4>S!Personをあらわすオリジナルタイプ</h4>
+  <p>
+    ※下記項目の内、どれか一つ指定してください。<br />
+    ※値をクリアする方法は「※7 値のクリア方法について」を参照してください。
+  </p>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w150">項目名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th class="w300">備考</th>
+    </tr>
+    <tr>
+      <td class="w100">mailaddress</td>
+      <td class="w150">ＰＣメールアドレス</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">mobilemailaddress</td>
+      <td class="w150">携帯メールアドレス</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">refusalflag</td>
+      <td class="w150">メール受信拒否フラグ</td>
+      <td class="w100">boolean</td>
+      <td class="w10">※</td>
+      <td>「true」もしくは「false」のみ指定可能<br />
+        （「true」：受信拒否 「false」：受信拒否しない）</td>
+    </tr>
+    <tr>
+      <td class="w100">mailerrorcount</td>
+      <td class="w150">ＰＣメールエラーカウント</td>
+      <td class="w100">int</td>
+      <td class="w10">※</td>
+      <td>0-99まで指定可能</td>
+    </tr>
+    <tr>
+      <td class="w100">mobilemailerrorcount</td>
+      <td class="w150">携帯メールエラーカウント</td>
+      <td class="w100">int</td>
+      <td class="w10">※</td>
+      <td>0-99まで指定可能</td>
+    </tr>
+    <tr>
+      <td class="w100">releaseflaglist</td>
+      <td class="w150">メルマガ解除フラグリスト</td>
+      <td class="w100">selectList</td>
+      <td class="w10">※</td>
+      <td>選択値（数値）のみ指定可能</td>
+    </tr>
+    <tr>
+      <td class="w100">name</td>
+      <td class="w150">氏名</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">kana</td>
+      <td class="w150">シメイ</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">prefecture</td>
+      <td class="w150">都道府県</td>
+      <td class="w100">singleSelect</td>
+      <td class="w10">※</td>
+      <td>選択値（数値）のみ指定可能</td>
+    </tr>
+    <tr>
+      <td class="w100">address</td>
+      <td class="w150">住所</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">zipcode</td>
+      <td class="w150">郵便番号</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">phonenumber</td>
+      <td class="w150">電話番号</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">faxnumber</td>
+      <td class="w150">FAX</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">mobilenumber</td>
+      <td class="w150">携帯電話番号</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">birthday</td>
+      <td class="w150">生年月日</td>
+      <td class="w100">date</td>
+      <td class="w10">※</td>
+      <td>yyyy-MM-dd 形式のみ指定可能</td>
+    </tr>
+    <tr>
+      <td class="w100">password</td>
+      <td class="w150">パスワード</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">extensions</td>
+      <td class="w150">追加項目</td>
+      <td class="w100">extensions</td>
+      <td class="w10">※</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <h3>extensions</h3>
+  <h4>追加項目をあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">extensionData</td>
+      <td class="w100">extensionData</td>
+      <td class="w10">○</td>
+      <td>出現上限１００回</td>
+    </tr>
+  </table>
+
+  <h3>extensionData</h3>
+  <h4>S!Personパラメータ名と型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>S!Personパラメータ名を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">data</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td></td>
+    </tr>
+  </table>
+
+
+
+  <h3>synergyComplexData</h3>
+  <h4>Synergy!の全ての型のデータを表すためのオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">textData</td>
+      <td class="w100">string</td>
+      <td class="w10">※</td>
+      <td>
+        Synergy!の単一選択型・複数選択型以外の型のデータを表します。<br />
+        「textData」「selectData」のどちらかを必ず指定してください。<br />
+        （「column」によりどちらを指定するかが決定されます。詳細は「※3 「textData」, 「selectData」指定可能項目一覧」参照）<br />
+      </td>
+    </tr>
+    <tr>
+      <td class="w100">selectData</td>
+      <td class="w100">selectList</td>
+      <td class="w10">※</td>
+      <td>
+        Synergy!の単一選択型・複数選択型のデータを表します。<br />
+        「textData」「selectData」のどちらかを必ず指定してください。<br />
+        （「column」によりどちらを指定するかが決定されます。詳細は「※3 textData, selectData指定可能項目一覧」参照）<br />
+        単一選択型のデータを入力する場合は、「selectList」型の保持する「select」データは基本的には複数入力できません。<br />
+        ただし例外として「searchCondition」の「op」属性にin, notinが指定された場合は複数入力できます。<br />
+      </td>
+    </tr>
+  </table>
+
+
+  <h3>selectList</h3>
+  <h4>Synergy!の複数選択型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">select</td>
+      <td class="w100">select</td>
+      <td class="w10"></td>
+      <td>出現回数の上限なし</td>
+    </tr>
+  </table>
+
+  <h3>singleSelect</h3>
+  <h4>Synergy!の単一選択型データをあらわすオリジナルタイプ<br />（S!Personの都道府県でのみ使用）</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">select</td>
+      <td class="w100">select</td>
+      <td class="w10"></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <h3>select</h3>
+  <h4>Synergy!の選択型データをあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">value</td>
+      <td class="w100">int</td>
+      <td class="w10">○</td>
+      <td>選択型の選択値</td>
+    </tr>
+    <tr>
+      <td class="w100">text</td>
+      <td class="w100">string</td>
+      <td class="w10"></td>
+      <td>選択型の補助テキスト<br />
+        （補助テキストは検索対象外）
+      </td>
+    </tr>
+  </table>
+
+  <h3>searchConditions</h3>
+  <h4>複数検索条件項目をあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">searchCondition</td>
+      <td class="w100">searchCondition</td>
+      <td class="w10"></td>
+      <td>
+        READ, COUNTは出現回数0～100回<br />
+        その他は出現回数0～1回<br />
+        1件も指定しない場合（出現回数0回時）は全件が検索対象となります。
+      </td>
+    </tr>
+  </table>
+
+  <h3>searchCondition</h3>
+  <h4>検索対象となるS!Personパラメータ名と検索条件をあらわすオリジナルタイプ</h4>
+  <table>
+    <tr>
+      <th class="w100">エレメント名</th>
+      <th class="w100">型</th>
+      <th class="w10">必須</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">column</td>
+      <td class="w100">string</td>
+      <td class="w10">○</td>
+      <td>検索対象となるS!Personパラメータ名を指定</td>
+    </tr>
+    <tr>
+      <td class="w100">condition</td>
+      <td class="w100">synergyComplexData</td>
+      <td class="w10">○</td>
+      <td>
+        検索条件を指定<br />
+        READ, COUNT時のみ「op」属性により「column」と「data」間の演算子を変更できます。<br />
+        READ, COUNT時以外は「op」属性は指定しないでください。<br />
+        （「op」属性詳細は「※4 「synergyComplexData」の「op」属性一覧」、「※5 「synergyComplexData」の「op」属性指定可能項目一覧」参照）<br />
+        （null検索、not null検索についての詳細は「※6 null, not null検索指定方法について」参照）<br />
+      </td>
+    </tr>
+  </table>
+
+  <h2>エラーコード</h2>
+  <h3>エラーコード</h3>
+  <h4>SynergyAPIから返されるエラー定義</h4>
+  <table>
+    <tr>
+      <th class="w100">エラーコード</th>
+      <th class="w500">メッセージ</th>
+      <th>備考</th>
+    </tr>
+    <tr>
+      <td class="w100">100</td>
+      <td class="w300">API-KEYが不正です</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w100">101</td>
+      <td class="w300">指定された項目がみつかりません column: [カラム名]</td>
+      <td>該当する項目がデータベースに存在しない際のエラー</td>
+    </tr>
+    <tr>
+      <td class="w100" rowspan="21">102</td>
+      <td class="w300">単一選択型の場合は選択肢を複数設定することはできません column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">存在しない選択肢です column: [カラム名] value: [値]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">true か false を指定してください column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">数値を設定してください column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">月日型は MM-dd 形式で指定してください column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">年月日型は yyyy-MM-dd 形式で指定してください column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">選択型の型の場合に textData 要素を指定することはできません column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">選択型以外の型の場合に selectData 要素を指定することはできません column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">項目が重複しています column: カラム名</td>
+      <td>create、update、upsertで更新データに同じ項目を指定した際のエラー</td>
+    </tr>
+    <tr>
+      <td class="w300">検索条件の演算子andまたはorの指定が不正です</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">searchCondition間の検索条件の演算子はread、countのみ指定できます</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">columnとdata間の検索条件の演算子はread、countのみ指定できます column: [カラム名]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">[カラム名]の検索条件の演算子指定が不正です</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">[カラム名]（単一選択型項目）で演算子省略、もしくはall指定時は選択肢を複数設定することはできません</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="w300">[カラム名]はnull値が存在しない為、nullまたはnot null検索できません</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w300">update、delete、upsertの検索条件は1つのみ指定できます</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w300">指定された検索条件が最大件数（100件）を越えています</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w300">sortcolumnに仕様対象外の項目が指定されました column: [カラム名]</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w300">limitは1以上100以下の値を指定してください</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w300">offsetは0以上の値を指定してください</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w300">[カラム名]のデータ形式が不正です</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">103</td>
+      <td class="w300">指定された条件で対象を1レコードに絞り込めませんでした</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">104</td>
+      <td class="w300">更新キー制約に違反します</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">105</td>
+      <td class="w300">指定された項目は設定されていません</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">106</td>
+      <td class="w300">[カラム名] にデータを設定することはできません</td>
+      <td>CREATE、UPDATE、UPSERTのデータ（synergyPerson）に更新不可項目（Synergy!ID、更新日時、システム登録日時）を指定した際のエラー</td>
+    </tr>
+
+    <tr>
+      <td class="w100">107</td>
+      <td class="w300">ACCESS DENIED</td>
+      <td>IPアドレス制限によるエラーが発生した際のエラー</td>
+    </tr>
+
+
+    <tr>
+      <td class="w100">108</td>
+      <td class="w300">ACCESS DENIED</td>
+      <td>アクセス制限数によるエラーが発生した際のエラー</td>
+    </tr>
+
+    <tr>
+      <td class="w100">109</td>
+      <td class="w300">XML PARSE ERROR</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">110</td>
+      <td class="w300">S!Person項目を指定してください</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">112</td>
+      <td class="w300">指定された条件で対象を1レコード以下に絞り込めませんでした</td>
+      <td>UPSERTで検索結果が複数件存在した際のエラー</td>
+    </tr>
+
+    <tr>
+      <td class="w100">113</td>
+      <td class="w300">登録直前に更新キー制約に違反するデータが割り込み登録された、または更新キー制約に違反します</td>
+      <td>UPSERTのデータ新規作成の際に発生するエラー</td>
+    </tr>
+
+    <tr>
+      <td class="w100">114</td>
+      <td class="w300">更新直前に割り込み削除されました</td>
+      <td>UPSERTのデータ更新の際に発生するエラー</td>
+    </tr>
+
+    <tr>
+      <td class="w100">200</td>
+      <td class="w300">Synergy!APIの設定がされていません</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">201</td>
+      <td class="w300">Synergy!APIが停止中です</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td class="w100">600</td>
+      <td class="w300">システムエラー</td>
+      <td>想定外のエラーが発生した際のエラー</td>
+    </tr>
+  </table>
+
+  <h2>その他</h2>
+
+  <h3>※1 「searchConditions」の「op」属性一覧</h3>
+  <p>
+    「searchConditions」の「op」属性で設定可能な値の一覧です。<br />
+    全ての「searchCondition」間を下記内容にて連結します。大文字、小文字どちらでも指定可能です。
+  </p>
+  <table>
+    <tr>
+      <th class="w100">属性値</th>
+      <th class="w300">説明</th>
+    </tr>
+    <tr>
+      <td>and</td>
+      <td>論理積（AND）</td>
+    </tr>
+    <tr>
+    <tr>
+      <td>or</td>
+      <td>論理和（OR）</td>
+    </tr>
+    <td>省略時</td>
+    <td>andが指定されたものとして処理されます。</td>
+    </tr>
+  </table>
+
+  <h3>※2 「sortcolumn」指定可能項目一覧</h3>
+  <p>「sortcolumn」に指定可能な項目の一覧です。</p>
+  <table>
+    <tr>
+      <th class="w200">固定項目</th>
+      <th class="w200">基本項目</th>
+      <th class="w200">追加項目</th>
+    </tr>
+    <tr>
+      <td>
+        Synergy!ID<br />
+        更新日時<br />
+        システム登録日時<br />
+        ＰＣメールエラーカウント<br />
+        携帯メールエラーカウント<br />
+      </td>
+      <td>
+        生年月日
+      </td>
+      <td>
+        数値型<br />
+        年月日型<br />
+        月日型
+      </td>
+    </tr>
+  </table>
+
+  <h3>※3 「textData」, 「selectData」指定可能項目一覧</h3>
+  <p>「textData」, 「selectData」それぞれに指定可能な項目の一覧です。</p>
+  <table>
+    <tr>
+      <th class="w200">synergyComplexData</th>
+      <th class="w200">固定項目</th>
+      <th class="w200">基本項目</th>
+      <th class="w200">追加項目</th>
+    </tr>
+    <tr>
+      <th class="w200">textData</th>
+      <td>
+        Synergy!ID<br />
+        ＰＣメールアドレス<br />
+        携帯メールアドレス<br />
+        更新日時<br />
+        システム登録日時<br />
+        メール受信拒否フラグ<br />
+        ＰＣメールエラーカウント<br />
+        携帯メールエラーカウント<br />
+      </td>
+      <td>
+        氏名<br />
+        シメイ<br />
+        住所<br />
+        郵便番号<br />
+        電話番号<br />
+        FAX<br />
+        携帯電話番号<br />
+        生年月日<br />
+        パスワード<br />
+      </td>
+      <td>
+        文字型<br />
+        数値型<br />
+        年月日型<br />
+        月日型<br />
+        パスワード型
+      </td>
+    </tr>
+    <tr>
+      <th class="w200">selectData</th>
+      <td>
+        メルマガ解除フラグリスト
+      </td>
+      <td>
+        都道府県
+      </td>
+      <td>
+        単一選択型<br />
+        複数選択型
+      </td>
+    </tr>
+  </table>
+
+  <h3>※4 「synergyComplexData」の「op」属性一覧</h3>
+  <p>
+    「synergyComplexData」の「op」属性で設定可能な値の一覧です。<br />
+    「column」と「condition」間を下記内容にて連結します。
+    大文字、小文字どちらでも指定可能です。
+  </p>
+  <table>
+    <tr>
+      <th class="w100">属性値</th>
+      <th class="w300">説明</th>
+    </tr>
+    <tr>
+      <td>eq</td>
+      <td>=</td>
+    </tr>
+    <tr>
+      <td>not</td>
+      <td>否定</td>
+    </tr>
+    <tr>
+      <td>lt</td>
+      <td>&lt;</td>
+    </tr>
+    <tr>
+      <td>gt</td>
+      <td>&gt;</td>
+    </tr>
+    <tr>
+      <td>le</td>
+      <td>&lt;=</td>
+    </tr>
+    <tr>
+      <td>ge</td>
+      <td>&gt;=</td>
+    </tr>
+    <tr>
+      <td>prefix</td>
+      <td>前方一致</td>
+    </tr>
+    <tr>
+      <td>suffix</td>
+      <td>後方一致</td>
+    </tr>
+    <tr>
+      <td>partial</td>
+      <td>部分一致</td>
+    </tr>
+    <tr>
+      <td>in</td>
+      <td>いずれか選択している</td>
+    </tr>
+    <tr>
+      <td>notin</td>
+      <td>いずれも選択していない</td>
+    </tr>
+    <tr>
+      <td>all</td>
+      <td>全て選択している</td>
+    </tr>
+    <tr>
+      <td>省略時</td>
+      <td>
+        「textData」指定時はeq<br />
+        「selectData」指定時はall<br />
+        が指定されたものとして処理されます。
+      </td>
+    </tr>
+  </table>
+
+  <h3>※5 「synergyComplexData」の「op」属性指定可能項目一覧</h3>
+  <p>
+    「synergyComplexData」の「op」属性は「column」によって指定可能な「op」属性値が異なります。<br />
+    大文字、小文字どちらでも指定可能です。<br />
+    以下はその一覧です。<br />
+  </p>
+  <table>
+    <tr>
+      <th class="w200" rowspan="2">synergyComplexData</th>
+      <th class="w200" rowspan="2">検索タイプ</th>
+      <th class="w200" colspan="3">対象項目</th>
+      <th class="w200" rowspan="2">指定可能属性値</th>
+    </tr>
+    <tr>
+      <th class="w200">固定項目</th>
+      <th class="w200">基本項目</th>
+      <th class="w200">追加項目</th>
+    </tr>
+    <tr>
+      <th class="w200" rowspan="5">textData</th>
+      <th>真偽検索</th>
+      <td>
+        メール受信拒否フラグ<br />
+      </td>
+      <td>-</td>
+      <td>-</td>
+      <td>
+        eq<br />
+        not
+      </td>
+    </tr>
+
+    <tr>
+      <th>範囲検索</th>
+      <td>
+        Synergy!ID<br />
+        更新日時<br />
+        システム登録日時<br />
+        ＰＣメールエラーカウント<br />
+        携帯メールエラーカウント<br />
+      </td>
+      <td>生年月日</td>
+      <td>
+        数値型<br />
+        年月日型<br />
+        月日型<br />
+      </td>
+      <td>
+        eq<br />
+        not<br />
+        lt<br />
+        gt<br />
+        le<br />
+        ge<br />
+      </td>
+    </tr>
+
+    <tr>
+      <th>あいまい検索</th>
+      <td>
+        ＰＣメールアドレス<br />
+        携帯メールアドレス<br />
+      </td>
+      <td>
+        氏名<br />
+        シメイ<br />
+        住所<br />
+        郵便番号<br />
+        電話番号<br />
+        FAX<br />
+        携帯電話番号<br />
+        パスワード<br />
+      </td>
+      <td>
+        文字型<br />
+        パスワード型<br />
+      </td>
+      <td>
+        eq<br />
+        not<br />
+        prefix<br />
+        suffix<br />
+        partial<br />
+      </td>
+    </tr>
+
+    <tr>
+      <th>null検索</th>
+      <td rowspan="2">
+        Synergy!ID、メール受信拒否フラグ、更新日時、システム登録日時、ＰＣメールエラーカウント、携帯メールエラーカウントを除く「textData」全固定項目
+      </td>
+      <td rowspan="2">「textData」全基本項目</td>
+      <td rowspan="2">「textData」全追加項目</td>
+      <td>eq</td>
+    </tr>
+
+    <tr>
+      <th>not null検索</th>
+      <td>not</td>
+    </tr>
+
+    <tr>
+      <th class="w200" rowspan="3">selectData</th>
+      <th>選択項目検索</th>
+      <td rowspan="3">メルマガ解除フラグリスト</td>
+      <td rowspan="3">都道府県</td>
+      <td rowspan="3">
+        単一選択型<br />
+        複数選択型
+      </td>
+      <td>
+        in<br />
+        notin<br />
+        all
+      </td>
+    </tr>
+
+    <tr>
+      <th>null検索</th>
+      <td>inまたはall<br />（どちらも同じ処理となります。）</td>
+    </tr>
+
+    <tr>
+      <th>not null検索</th>
+      <td>notin</td>
+    </tr>
+
+  </table>
+
+  <h3>※6 null, not null検索指定方法について</h3>
+  <ul>
+    <li>「textData」のnull、not null検索は「textData」の属性に「xsi:nil="true"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"」を指定し、空要素にしてください。</li>
+    <li>「selectData」のnull、not null検索は「select」型の要素を無指定としてください。</li>
+  </ul>
+
+  <h3>※7 値のクリア方法について</h3>
+
+  <p>
+    値のクリアには以下の方法があります。
+    <p>
+      <table>
+        <tr>
+          <th class="w150">クリア方法</th>
+          <th class="w500">説明</th>
+        </tr>
+        <tr>
+          <td class="w150">空要素クリア</td>
+          <td class="w500">値を空要素にしてください。</td>
+        </tr>
+
+        <tr>
+          <td class="w150">属性nil指定クリア</td>
+          <td class="w500">値の属性に「xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"」<br />
+            を指定し、空要素にしてください。</td>
+        </tr>
+
+        <tr>
+          <td class="w150">select型要素無指定クリア</td>
+          <td class="w500">「select」型の要素を無指定としてください。</td>
+        </tr>
+      </table>
+
+
+      <p>
+        また、項目により値のクリア可不可、クリア方法が異なります。<br />
+        以下はその一覧です。
+      </p>
+
+      <table>
+        <tr>
+          <th class="w150">項目名</th>
+          <th class="w100">型</th>
+          <th class="w50">クリア可</th>
+          <th class="w300">クリア方法</th>
+        </tr>
+        <tr>
+          <td class="w150">ＰＣメールアドレス</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">携帯メールアドレス</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">メール受信拒否フラグ</td>
+          <td class="w100">boolean</td>
+          <td class="w50">×</td>
+          <td class="w150">-</td>
+        </tr>
+        <tr>
+          <td class="w150">ＰＣメールエラーカウント</td>
+          <td class="w100">int</td>
+          <td class="w50">×</td>
+          <td class="w150">-</td>
+        </tr>
+        <tr>
+          <td class="w150">携帯メールエラーカウント</td>
+          <td class="w100">int</td>
+          <td class="w50">×</td>
+          <td class="w150">-</td>
+        </tr>
+        <tr>
+          <td class="w150">メルマガ解除フラグリスト</td>
+          <td class="w100">selectList</td>
+          <td class="w50">○</td>
+          <td class="w150">select型要素無指定クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">氏名</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">シメイ</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">都道府県</td>
+          <td class="w100">singleSelect</td>
+          <td class="w50">○</td>
+          <td class="w150">select型要素無指定クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">住所</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+
+        <tr>
+          <td class="w150">郵便番号</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+
+        <tr>
+          <td class="w150">電話番号</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+
+        <tr>
+          <td class="w150">FAX</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+
+        <tr>
+          <td class="w150">携帯電話番号</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">生年月日</td>
+          <td class="w100">date</td>
+          <td class="w50">○</td>
+          <td class="w150">属性nil指定クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">パスワード</td>
+          <td class="w100">string</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（文字型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（数値型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（年月日型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（月日型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（単一選択型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">select型要素無指定クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（複数選択型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">select型要素無指定クリア</td>
+        </tr>
+        <tr>
+          <td class="w150">追加項目（パスワード型）</td>
+          <td class="w100">extensionData</td>
+          <td class="w50">○</td>
+          <td class="w150">空要素クリア</td>
+        </tr>
+      </table>
+
+
+      <h2>改訂履歴</h2>
+      <table>
+        <tr>
+          <th class="w100">改訂日</th>
+          <th class="w300">更新内容</th>
+        </tr>
+        <tr>
+          <td class="w100">2020/02/18</td>
+          <td class="w300">補足事項にタイムスタンプ型に関する説明を追記</td>
+        </tr>
+        <tr>
+          <td class="w100">2018/11/12</td>
+          <td class="w300">SSL通信に関する文言を修正（TLS1.0→TLS1.2）</td>
+        </tr>
+        <tr>
+          <td class="w100">2018/08/10</td>
+          <td class="w300">エレメント名「selectData」の「備考」欄の表記間違いを修正（selet→select）</td>
+        </tr>
+        <tr>
+          <td class="w100">2018/08/10</td>
+          <td class="w300">補足事項のSSL通信に関する文言に「TLS1.0以上」を追記</td>
+        </tr>
+        <tr>
+          <td class="w100">2017/07/25</td>
+          <td class="w300">初版</td>
+        </tr>
+      </table>
+    </p>
+  </p>
+</body>
+
+</html>
