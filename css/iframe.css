@@ -1,0 +1,77 @@
+@charset "shift_jis";
+
+html {
+	overflow-y:scroll;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-size:100%;
+	font-weight: normal;
+}
+
+address, caption, cite, code, th {
+	font-style: normal;
+	font-weight:normal;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+caption, th {
+	text-align: left;
+}
+
+img, table, fieldset {
+	border: 0;
+}
+
+img, object, embed {
+	vertical-align: bottom;
+}
+
+legend {
+	color:#333333;
+}
+
+input, textarea, select {
+	font-family:inherit;
+	font-size:inherit;
+	font-weight:inherit;
+}
+
+body {
+	font-size:12px;
+	color:#333333;
+	font-family:"ÉÅÉCÉäÉI", "ÉqÉâÉMÉmäpÉS Pro W3", "Hiragino Kaku Gothic Pro", Meiryo, Osaka, "ÇlÇr ÇoÉSÉVÉbÉN", "MS PGothic", sans-serif;
+}
+
+h1{
+	font-size:12px;
+	font-weight:bold;
+}
+
+h2{
+	font-size:12px;
+	font-weight:bold;
+	margin-top:30px;
+}
+
+h3{
+	font-weight:bold;
+	display:inline;
+}
+
+p{
+	display:inline;
+}
+
+#logo,#tel{
+	display:none;
+}
+
+.olBasic{
+	margin:0px;
+}
+

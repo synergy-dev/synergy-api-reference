@@ -1,0 +1,120 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Synergy!API基本仕様書</title>
+<meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
+<link rel="shortcut icon" href="https://www.crmstyle.com/formparts_apply/img/favicon.ico" />
+<link rel="stylesheet" href="./css/layout.css" type="text/css" media="all" id="css" />
+<script>
+onload=function(){
+  if(location.search!=""){
+    document.getElementById("css").href="./css/iframe.css";
+  }
+}
+</script>
+</head>
+
+<body>
+<div id="wrapper">
+<div id="header">
+  <div id="logo"><a href="http://www.crmstyle.com/"><img src="https://www.crmstyle.com/formparts_apply/img/logo_synergy.gif" alt="Synergy!" /></a></div>
+  <div id="tel">
+    <dl>
+<dt>カスタマーサポートお問い合わせ</dt>
+        <dd>06-4797-2501</dd>
+      </dl>
+      <br />
+      <p>平日10:00-12:00／13:00-18:00</p>
+  
+  <!-- /#header --></div>
+<div id="content">
+<div id="main">
+<section>
+<h1 class="ttl01" id="basic">Synergy!API基本仕様書</h1>
+<div class="section">
+<div class="mb20">
+<div class="mb20">
+  <h2 class="ttl03 mb10">1．機能の概要</h2>
+  <p>ASPサービスSynergy!APIとはSOAP（※）を使用し、外部サービスからASPサービスSynergy!にあらかじめ設定された情報モデル（S!PersonおよびS!History）に対し、レコードの登録・参照・更新・削除を行うことができるAPIの機能です。<br />
+    この機能を用いることでASPサービスSynergy!のマスタデータベースおよび履歴データベースに格納されている情報に対し、外部のシステムからでもレコードを操作することが可能となります。<br />
+    この機能を利用してASPサービスSynergy!のデータベースと別のシステムのデータベースとの間でのデータ連携したり、ASPサービスSynergy!が提供するWebページ以外のWebページからのデータのレコード操作を行うといった用途で用いることができます。<br />
+    ※Simple Object Access Protocol：他のコンピュータにあるソフトウェア同士がデータやサービスを呼び出すためのプロトコル</p>
+</div>
+<div class="mb20">
+  <h2 class="ttl03 mb10">2．「S!Person」について</h2>
+  <p>S!Personとはマスターデータベースに対応する情報モデルで、S!Personが持つデータ項目は固定項目、基本項目と追加項目に分類されます。</p>
+  <ul class="ulBasic">
+  <li>固定項目<br />
+    ASPサービスSynergy!にあらかじめ登録されている以下の項目はS!Personにおいて固定項目とし、常に取り扱うことができます。<br />
+    Synergy!ID、PCメールアドレス、携帯メールアドレス、更新日時、システム登録日時、メール受信拒否フラグ、PCメールエラーカウント、携帯メールエラーカウント、メルマガ解除フラグリスト</li>
+  <li>基本項目<br />
+    以下の項目はS!Personにおいて基本項目とし、常に取り扱うことができますが、取り扱うためには予めそれぞれの項目をASPサービスSynergy!に設計したデータベース項目に関連づけておく必要があります。<br />
+    氏名、シメイ、都道府県、住所、郵便番号、電話番号、FAX、携帯電話番号、生年月日、パスワード</li>
+  <li>追加項目<br />
+    固定項目、基本項目以外でマスターデータベースの任意のデータベース項目を100項目まで追加項目として取り扱うことができます。</li>
+</ul>
+</div>
+<div class="mb20">
+<h2 class="ttl03 mb10">3．「S!History」について</h2>
+<p>S!Historyとは履歴データベースに対応する情報モデルで、S!Historyが持つデータ項目は固定項目と追加項目に分類されます。</p>
+<p>・固定項目<br />
+  以下の項目はS!Historyにおいて基本項目とし、常に取り扱うことができます。<br />
+  Synergy!ID、HistoryID</p>
+<p>・追加項目<br />
+  固定項目以外で履歴型データベースの任意のデータベース項目を20項目まで追加項目として取り扱うことができます。</p>
+</div>
+<div class="mb20">
+<h2 class="ttl03 mb10">4．機能提供におけるサービスレベル</h2>
+<p>ASPサービスSynergy!APIでは機能を提供するにあたり、努力目標として以下のサービスの基準を満たすよう、商業的に合理的な努力をもって機能を提供します。</p>
+  <ul class="ulBasic">
+<li>稼働率<br>
+  ASPサービスSynergy!APIの稼働率目標は月間で99%とします。<br>
+  ただし、稼働率の計算にあたり事前に予告された定期メンテナンスの時間は稼働率にかかる停止時間には含めないものとします。</li>
+<li>定期メンテナンス<br>
+  3ヶ月に一度程度、ASPサービスSynergy!APIを停止してのメンテナンス作業を実施いたします。<br>
+  実施にあたっては2週間前までに作業の日程およびサービス停止時間帯等をサービス利用者に対し通知いたします。</li>
+<li>サポート<br>
+  問い合わせは原則として<a href="https://upgb.f.msgs.jp/webapp/form/22042_upgb_1/index.do" target="_blank">API技術サポートお問い合わせフォーム</a>または<a href="mailto:api-support@i.msgs.jp">メール</a>でのお問い合わせのみとし、
+  お問合わせいただける内容はASPサービスSynergy!APIの機能仕様または稼働状況の確認に限定させていただきます。<br>
+  よって、ASPサービスSynergy!APIの機能を利用したシステム構築など、利用者側の技術等に依存する内容に関してのお問い合わせはお受けすることはできません。</li>
+</ul>
+</div>
+<div class="mb20">
+<h2 class="ttl03 mb10">5．機能の利用に関する制限</h2>
+<p>ASPサービスSynergy!APIをご利用いただく場合は、弊社の指定した以下の利用制限の範囲内でしかご利用いただくことはできません。<br />
+  利用制限に反する利用等、弊社がASPサービスSynergy!の提供に相当の支障があると判断した場合はアクセス制限や機能自体の停止等の処置を行うことがあります。</p>
+  <ul class="ulBasic">
+<li>1秒あたりのリクエスト回数<br>
+  ASPサービスSynergy!の1契約単位からのリクエスト回数が1秒あたり50回を超えるような利用方法</li>
+<li>同一のリクエストの繰り返し<br>
+  1分程度の短時間の間に同じリクエストを何度も繰り返すような利用方法</li>
+<li>大量データの登録<br>
+  10万件を超えるデータの登録を数時間に渡って継続するような利用方法</li>
+  </ul>
+</div>
+</div>
+<!-- /.section -->
+</div>
+</section>
+
+<!-- /#main -->
+</div>
+    <div align="right" class="mb10 small">
+      2015年07月15日 初版作成<br>
+      2020年03月15日 改定
+    </div>
+
+<!-- /#content -->
+</div>
+<div id="footer">
+  <address>
+  &copy; 2015-<script type="text/javascript">document.write(new Date().getFullYear());</script> Synergy Marketing, Inc.
+  </address>
+  <!-- /#footer --></div>
+
+<!-- /#wrapper -->
+</div>
+</body>
+</html>
