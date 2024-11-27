@@ -1,4 +1,4 @@
-@charset "shift_jis";
+@charset "utf-8";
 
 html {
 	overflow-y:scroll;
@@ -53,7 +53,7 @@ legend {
 }
 
 input, textarea, select {
-	font-family:inherit;
+	font-family: "Roboto", "Noto Sans JP", sans-serif;
 	font-size:inherit;
 	font-weight:inherit;
 }
@@ -66,7 +66,7 @@ body {
 	font-size:75%;
 	color:#333333;
 	background:url(../image/pic_body_bg.gif) center repeat-y;
-	font-family:"ƒƒCƒŠƒI", "ƒqƒ‰ƒMƒmŠpƒS Pro W3", "Hiragino Kaku Gothic Pro", Meiryo, Osaka, "‚l‚r ‚oƒSƒVƒbƒN", "MS PGothic", sans-serif;
+	font-family: "Roboto", "Noto Sans JP", sans-serif;
 }
 
 
@@ -126,7 +126,6 @@ body {
 #header #tel dd{
 	font-size:130%;
 	font-weight:bold;
-	font-family:Arial, Helvetica, sans-serif;
 	margin-left:3px;
 	letter-spacing:1px;
 }
@@ -174,6 +173,7 @@ body {
 	line-height:1.6;
 	margin-bottom:20px;
 	width:540px;
+	font-family: "M PLUS 1p", sans-serif;
 }
 
 #main .step{
@@ -197,14 +197,14 @@ body {
 #main .step li span{
 	text-decoration:none;
 	color:#999999;
-	padding:2px 20px 2px 8px;
+	padding:4px 20px 4px 8px;
 	background:#f3f2f2 url(../image/pic_arw_right.gif) no-repeat 100% 50%;
 	border-radius:2px 0px 0px 2px;
 }
 
 #main .step li span.last{
 	background:#f3f2f2;
-	padding:2px 8px;
+	padding:4px 8px;
 	border-radius:2px 2px 2px 2px;
 }
 
@@ -221,6 +221,7 @@ body {
 #main .ttl02{
 	font-size:160%;
 	margin-bottom:20px;
+	font-family: "M PLUS 1p", sans-serif;
 }
 
 #main .ttl03{
@@ -380,7 +381,7 @@ a.ov:hover img{
 ----------------------------------------------------------------------------- */
 
 
-/* ƒŠƒXƒg */
+/* ãƒªã‚¹ãƒˆ */
 
 ul.ulBasic{
 	margin-bottom:15px;
@@ -443,7 +444,7 @@ dl.dlBasic dd{
 	line-height:1.8;
 	padding-left:9em;
 	margin-bottom:3px;
-	_text-indent:-3px;/*-----IE‚Å2s–ÚˆÈ~‚ª‚¸‚ê‚é‚Ì‚ğ–h‚®-----*/
+	_text-indent:-3px;/*-----IEã§2è¡Œç›®ä»¥é™ãŒãšã‚Œã‚‹ã®ã‚’é˜²ã-----*/
 }
 
 table.tbBasic{
@@ -522,7 +523,7 @@ table.tbBasic td .example{
 
 table.tbBasic td pre{
 	font-size:12px;
-	font-family:"ƒƒCƒŠƒI", "ƒqƒ‰ƒMƒmŠpƒS Pro W3", "Hiragino Kaku Gothic Pro", Meiryo, Osaka, "‚l‚r ‚oƒSƒVƒbƒN", "MS PGothic", sans-serif;
+	font-family: inherit;
 }
 
 table.tbBasic table{
@@ -716,7 +717,7 @@ br.clear{
 	min-height: 1%;
 }
 
-/* Hides from IE-mac \*/
+/* Hides from IE-mac Â¥*/
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
 /* End hide from IE-mac */
@@ -766,7 +767,7 @@ div.section:after{
 	height:1px;
 	overflow:hidden;
 }
-/*\*/
+/*Â¥*/
 * html div#content,
 * html div#main,
 * html div.section{

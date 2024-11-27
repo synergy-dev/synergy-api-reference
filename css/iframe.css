@@ -1,4 +1,4 @@
-@charset "shift_jis";
+@charset "utf-8";
 
 html {
 	overflow-y:scroll;
@@ -44,7 +44,7 @@ input, textarea, select {
 body {
 	font-size:12px;
 	color:#333333;
-	font-family:"ƒƒCƒŠƒI", "ƒqƒ‰ƒMƒmŠpƒS Pro W3", "Hiragino Kaku Gothic Pro", Meiryo, Osaka, "‚l‚r ‚oƒSƒVƒbƒN", "MS PGothic", sans-serif;
+	font-family: "Roboto", "Noto Sans JP", sans-serif;
 }
 
 h1{
